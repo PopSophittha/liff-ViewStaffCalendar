@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ตารางทำงานประจำวัน</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h2>📅 ตารางทำงานวันนี้</h2>
+  <div id="content">กำลังโหลด...</div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwjd1uac7DqbH6QCJrdluTjCY_a5T_OZC-DWvvJB2EOEo8yqSvtsA5Cz9utQkf-Zp7GhA/exec"; // ใส่ URL จาก Google Apps Script
+
+    async function loadImage() {
+      try {
+        let res = await fetch(API_URL);
+        let data = await res.json();
+
+        if (data.image) {
+          document.getElementById("content").innerHTML =
+            `<p>วันที่: ${data.date}</p><img src="${data.image}" alt="ตารางวันนี้">`;
+        } else {
+          document.getElementById("content").innerHTML = "❌ ไม่มีไฟล์สำหรับวันนี้";
+        }
+      } catch (err) {
+        document.getElementById("content").innerHTML = "⚠️ โหลดข้อมูลผิดพลาด";
+      }
+    }
+
+    loadImage();
+  </script>
+</body>
+</html>
