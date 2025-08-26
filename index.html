@@ -33,7 +33,11 @@
 
         if (data.image) {
           document.getElementById("content").innerHTML =
-            `<p>วันที่: ${data.date} /n/n ${data.image}</p><img src="${data.image}" alt="ตารางวันนี้">`;
+            <p>
+              วันที่: ${data.date} <br><br>
+              <a href="${data.image}" target="_blank">ดูตารางวันนี้</a>
+            </p>
+            // `<p>วันที่: ${data.date}</p><img src="${data.image}" alt="ตารางวันนี้">`;
         } else {
           document.getElementById("content").innerHTML = "❌ ไม่มีไฟล์สำหรับวันนี้";
         }
