@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Daily Calendar V1.0.5</title>
+  <title>Daily Calendar V1.0.6</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
@@ -47,26 +47,13 @@
   </div>
   
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwVF52svd0ImUDifdpef8SbMMAzh-0QlxNiXkybIlvjFrex4wVhEI4v_mNdlaLSvF1fwA/exec";
-
-    // ✅ JSONP helper (แก้ CORS)
-    function callAPI(url, callbackName) {
-      return new Promise((resolve) => {
-        window[callbackName] = function(data) {
-          resolve(data);
-          delete window[callbackName];
-        };
-
-        const script = document.createElement("script");
-        script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + callbackName;
-        document.body.appendChild(script);
-      });
-    }
+    const API_URL = "https://script.google.com/macros/s/AKfycbzvWWGKWqBAqPmXdmX03G8gnZd_mnwkqBo4nnfwqfGERnGxQdGF1h9KZScYqbadRpY7NQ/exec";
 
     // ✅ โหลดตารางวันนี้
     async function loadImage() {
       try {
-        let data = await callAPI(API_URL, "cb1");
+        let res = await fetch(API_URL);
+        let data = await res.json();
 
         if (data.image) {
           document.getElementById("content").innerHTML =
@@ -86,10 +73,10 @@
 
     loadImage();
 
-    // ✅ login
+    // ✅ login (fetch ปกติ)
     async function checkLogin() {
-      const code = document.getElementById("empCode").value;
-      const pass = document.getElementById("password").value;
+      const code = document.getElementById("empCode").value.trim();
+      const pass = document.getElementById("password").value.trim();
     
       if (!code || !pass) {
         alert("⚠️ Please input data");
@@ -100,8 +87,8 @@
       overlay.style.display = "flex";
     
       try {
-        let url = API_URL + "?mode=private&staffId=" + code + "&pass=" + pass;
-        let data = await callAPI(url, "cb2");
+        let res = await fetch(API_URL + "?mode=private&staffId=" + encodeURIComponent(code) + "&pass=" + encodeURIComponent(pass));
+        let data = await res.json();
     
         if (data.privateImages && data.privateImages.length > 0) {
           let html = "";
