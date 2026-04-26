@@ -78,27 +78,34 @@
     async function checkLogin() {
       const code = document.getElementById("empCode").value;
       const pass = document.getElementById("password").value;
-  
+    
       if (!code || !pass) {
-        alert("Plase input data");
+        alert("⚠️ Please input data");
         return;
       }
-  
+    
+      // 🔥 เปิด overlay
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.style.display = "flex";
+    
       try {
         let res = await fetch(API_URL + "?mode=private&code=" + code + "&pass=" + pass);
         let data = await res.json();
-  
+    
         if (data.privateImage) {
           document.getElementById("privateLink").innerHTML =
-            `<a href="${data.privateImage}" target="_blank">👤 Personal Calendar</a>`;
+            `<a href="${data.privateImage}" target="_blank">👤 View Personal Calendar</a>`;
         } else {
           document.getElementById("privateLink").innerHTML =
-            "❌ incorrect StaffID or Password";
+            "❌ Incorrect StaffID or Password";
         }
-  
+    
       } catch (err) {
         document.getElementById("privateLink").innerHTML = "⚠️ Fail";
       }
+    
+      // 🔥 ปิด overlay
+      overlay.style.display = "none";
     }
   </script>
 </body>
