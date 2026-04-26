@@ -89,7 +89,7 @@
       overlay.style.display = "flex";
     
       try {
-        let res = await fetch(API_URL + "?mode=private&code=" + code + "&pass=" + pass);
+        let res = await fetch(API_URL + "?mode=private&staffId=" + code + "&pass=" + pass);
         let data = await res.json();
     
         if (data.privateImages && data.privateImages.length > 0) {
