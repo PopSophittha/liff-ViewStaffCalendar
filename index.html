@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ตารางทำงานประจำวัน</title>
+  <title>Daily Calendar V1.0.0</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
@@ -20,16 +20,31 @@
   </style>
 </head>
 <body>
-  <h2>📅 ตารางทำงานวันนี้</h2>
-  <div id="content">กำลังโหลด...</div>
+  <h2>📅 Today Calendar</h2>
+  <div id="content">⏳ Loading...</div>
   
   <hr style="margin:30px 0;">
   
-  <h3>🔐 ดูตารางส่วนบุคคล</h3>
-  <input type="text" id="empCode" placeholder="รหัสพนักงาน"><br><br>
-  <input type="password" id="password" placeholder="รหัสผ่าน"><br><br>
-  <button onclick="checkLogin()">เข้าสู่ระบบ</button>
+  <h3>🔐 Personal Calendar</h3>
+  <input type="text" id="empCode" placeholder="Staff ID"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+  <button onclick="checkLogin()">Login</button>
   <div id="privateLink" style="margin-top:20px;"></div>
+
+  <div id="loadingOverlay" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+    color:white;
+    font-size:20px;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+  ">
+    ⏳ Loading...
+  </div>
   
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbzo7RRFgDq0wCmscDj3KK9widCbndKSlVVQbSSBqW23osItAOCoNBfAXKglr9Qb8MNVqw/exec"; // ใส่ URL จาก Google Apps Script
@@ -42,19 +57,19 @@
         if (data.image) {
           document.getElementById("content").innerHTML =
             `<p>
-              วันที่: ${data.date} <br><br>
+              Today: ${data.date} <br><br>
           
-              <a href="${data.image}" target="_blank">📅 ดูตารางวันนี้</a>
+              <a href="${data.image}" target="_blank">📅 View Today Calendar</a>
               
               <br><br>
           
-              <a href="${data.nextImage}" target="_blank">➡️ ดูตารางวันถัดไป</a>
+              <a href="${data.nextImage}" target="_blank">➡️ View Next day Calendar</a>
             </p>`;
         } else {
-          document.getElementById("content").innerHTML = "❌ ไม่มีไฟล์สำหรับวันนี้";
+          document.getElementById("content").innerHTML = "❌ No file for today";
         }
       } catch (err) {
-        document.getElementById("content").innerHTML = "⚠️ โหลดข้อมูลผิดพลาด";
+        document.getElementById("content").innerHTML = "⚠️ Fail to download";
       }
     }
 
@@ -65,7 +80,7 @@
       const pass = document.getElementById("password").value;
   
       if (!code || !pass) {
-        alert("กรุณากรอกข้อมูล");
+        alert("Plase input data");
         return;
       }
   
@@ -75,14 +90,14 @@
   
         if (data.privateImage) {
           document.getElementById("privateLink").innerHTML =
-            `<a href="${data.privateImage}" target="_blank">👤 ดูตารางของคุณ</a>`;
+            `<a href="${data.privateImage}" target="_blank">👤 Personal Calendar</a>`;
         } else {
           document.getElementById("privateLink").innerHTML =
-            "❌ รหัสไม่ถูกต้อง หรือไม่มีข้อมูล";
+            "❌ incorrect StaffID or Password";
         }
   
       } catch (err) {
-        document.getElementById("privateLink").innerHTML = "⚠️ เกิดข้อผิดพลาด";
+        document.getElementById("privateLink").innerHTML = "⚠️ Fail";
       }
     }
   </script>
