@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Daily Calendar V1.0.4</title>
+  <title>Daily Calendar V1.0.5</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
@@ -47,22 +47,33 @@
   </div>
   
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyW6OXydB4xNn2wdXU8zbY6khk4-GZg3evT15imyQDNaj5Cf1zUmVzNK_GJH2iYjPJHWA/exec"; // ใส่ URL จาก Google Apps Script
+    const API_URL = "https://script.google.com/macros/s/AKfycbwVF52svd0ImUDifdpef8SbMMAzh-0QlxNiXkybIlvjFrex4wVhEI4v_mNdlaLSvF1fwA/exec";
 
+    // ✅ JSONP helper (แก้ CORS)
+    function callAPI(url, callbackName) {
+      return new Promise((resolve) => {
+        window[callbackName] = function(data) {
+          resolve(data);
+          delete window[callbackName];
+        };
+
+        const script = document.createElement("script");
+        script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + callbackName;
+        document.body.appendChild(script);
+      });
+    }
+
+    // ✅ โหลดตารางวันนี้
     async function loadImage() {
       try {
-        let res = await fetch(API_URL);
-        let data = await res.json();
+        let data = await callAPI(API_URL, "cb1");
 
         if (data.image) {
           document.getElementById("content").innerHTML =
             `<p>
               Today: ${data.date} <br><br>
-          
               <a href="${data.image}" target="_blank">📅 View Today Calendar</a>
-              
               <br><br>
-          
               <a href="${data.nextImage}" target="_blank">➡️ View Next day Calendar</a>
             </p>`;
         } else {
@@ -75,6 +86,7 @@
 
     loadImage();
 
+    // ✅ login
     async function checkLogin() {
       const code = document.getElementById("empCode").value;
       const pass = document.getElementById("password").value;
@@ -84,17 +96,16 @@
         return;
       }
     
-      // 🔥 เปิด overlay
       const overlay = document.getElementById("loadingOverlay");
       overlay.style.display = "flex";
     
       try {
-        let res = await fetch(API_URL + "?mode=private&staffId=" + code + "&pass=" + pass);
-        let data = await res.json();
+        let url = API_URL + "?mode=private&staffId=" + code + "&pass=" + pass;
+        let data = await callAPI(url, "cb2");
     
         if (data.privateImages && data.privateImages.length > 0) {
-        let html = "";
-        data.privateImages.forEach(item => {
+          let html = "";
+          data.privateImages.forEach(item => {
             html += `
               <div style="margin-bottom:10px;">
                 📅 ${item.month} <br>
@@ -112,7 +123,6 @@
         document.getElementById("privateLink").innerHTML = "⚠️ Fail";
       }
     
-      // 🔥 ปิด overlay
       overlay.style.display = "none";
     }
   </script>
