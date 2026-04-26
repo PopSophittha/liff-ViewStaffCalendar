@@ -35,9 +35,13 @@
           document.getElementById("content").innerHTML =
             `<p>
               วันที่: ${data.date} <br><br>
-              <a href="${data.image}" target="_blank">ดูตารางวันนี้</a>
+          
+              <a href="${data.image}" target="_blank">📅 ดูตารางวันนี้</a>
+              
+              <br><br>
+          
+              <a href="${data.nextImage}" target="_blank">➡️ ดูตารางวันถัดไป</a>
             </p>`;
-          //   `<p>วันที่: ${data.date}</p><img src="${data.image}" alt="ตารางวันนี้">`;
         } else {
           document.getElementById("content").innerHTML = "❌ ไม่มีไฟล์สำหรับวันนี้";
         }
