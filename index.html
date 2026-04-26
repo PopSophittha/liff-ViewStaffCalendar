@@ -92,9 +92,17 @@
         let res = await fetch(API_URL + "?mode=private&code=" + code + "&pass=" + pass);
         let data = await res.json();
     
-        if (data.privateImage) {
-          document.getElementById("privateLink").innerHTML =
-            `<a href="${data.privateImage}" target="_blank">👤 View Personal Calendar</a>`;
+        if (data.privateImages && data.privateImages.length > 0) {
+        let html = "";
+        data.privateImages.forEach(item => {
+            html += `
+              <div style="margin-bottom:10px;">
+                📅 ${item.month} <br>
+                <a href="${item.url}" target="_blank">View Personal Calendar</a>
+              </div>
+            `;
+          });
+          document.getElementById("privateLink").innerHTML = html;
         } else {
           document.getElementById("privateLink").innerHTML =
             "❌ Incorrect StaffID or Password";
