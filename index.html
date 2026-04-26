@@ -22,7 +22,15 @@
 <body>
   <h2>📅 ตารางทำงานวันนี้</h2>
   <div id="content">กำลังโหลด...</div>
-
+  
+  <hr style="margin:30px 0;">
+  
+  <h3>🔐 ดูตารางส่วนบุคคล</h3>
+  <input type="text" id="empCode" placeholder="รหัสพนักงาน"><br><br>
+  <input type="password" id="password" placeholder="รหัสผ่าน"><br><br>
+  <button onclick="checkLogin()">เข้าสู่ระบบ</button>
+  <div id="privateLink" style="margin-top:20px;"></div>
+  
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx07fIhvyeCinc8FT-DFSJLr8_QImYEjyQF-RJL-xSDgt68kvIpVB-rdWOTYCgtbcll/exec"; // ใส่ URL จาก Google Apps Script
 
@@ -51,6 +59,32 @@
     }
 
     loadImage();
+
+    async function checkLogin() {
+      const code = document.getElementById("empCode").value;
+      const pass = document.getElementById("password").value;
+  
+      if (!code || !pass) {
+        alert("กรุณากรอกข้อมูล");
+        return;
+      }
+  
+      try {
+        let res = await fetch(API_URL + "?mode=private&code=" + code + "&pass=" + pass);
+        let data = await res.json();
+  
+        if (data.privateImage) {
+          document.getElementById("privateLink").innerHTML =
+            `<a href="${data.privateImage}" target="_blank">👤 ดูตารางของคุณ</a>`;
+        } else {
+          document.getElementById("privateLink").innerHTML =
+            "❌ รหัสไม่ถูกต้อง หรือไม่มีข้อมูล";
+        }
+  
+      } catch (err) {
+        document.getElementById("privateLink").innerHTML = "⚠️ เกิดข้อผิดพลาด";
+      }
+    }
   </script>
 </body>
 </html>
